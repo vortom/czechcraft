@@ -23,18 +23,19 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build
-        run: ./gradlew build
+      - name: Run datagen
+        run: ./gradlew :fabric:runDatagen
 
-      - name: Run datagen + verify output is current
+      - name: Verify committed datagen output is current
         run: |
-          ./gradlew :fabric:runDatagen :fabric:test
-          # Fail if committed datagen output drifted from what providers generate (excluding the .cache dir)
           if ! git diff --quiet -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'; then
             echo "::error::Datagen output is out-of-date. Run ./gradlew :fabric:runDatagen and commit the changes."
             git diff -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'
             exit 1
           fi
+
+      - name: Build (compiles + runs tests with generated output in place)
+        run: ./gradlew build
 
       - name: Publish to Modrinth
         env:
