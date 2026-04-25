@@ -61,6 +61,10 @@ Edits to recipes / models / translations require re-running datagen and committi
 ./gradlew spotlessApply
 ```
 
+## Contributing artwork
+
+CzechCraft has a written style guide for all visual assets — see [`docs/design/asset-handbook.md`](docs/design/asset-handbook.md). Run `python3 scripts/check-asset.py --all` to validate every asset against the rules locally.
+
 ## Architecture
 
 CzechCraft uses the **MultiLoader-Template** structure:
