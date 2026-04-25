@@ -1,5 +1,6 @@
 plugins {
     id "fabric-loom" version "1.7-SNAPSHOT"
+    id "com.modrinth.minotaur"
 }
 
 archivesBaseName = project.mod_id
@@ -50,3 +51,21 @@ processResources {
 jar {
     from(rootProject.file("LICENSE")) { rename { "${it}_${project.mod_id}" } }
 }
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = project.mod_id
+    versionNumber = project.mod_version
+    def isSnapshot = project.mod_version.endsWith("-SNAPSHOT")
+    versionType = isSnapshot ? "alpha" : "release"
+    uploadFile = remapJar
+    gameVersions = [project.minecraft_version]
+    loaders = ["fabric"]
+    dependencies {
+        required.project "fabric-api"
+    }
+    syncBodyFrom = rootProject.file("README.md").text
+    changelog = rootProject.file("CHANGELOG.md").text
+}
+
+tasks.modrinth.dependsOn tasks.remapJar
