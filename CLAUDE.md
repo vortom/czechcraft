@@ -43,3 +43,4 @@ Prereq: `MODRINTH_TOKEN` repo secret set (Modrinth PAT with "Create version" sco
 - Java package root: `cz.czechcraft`. Mod ID: `czechcraft`. Modrinth slug: `czechcraft`. GitHub: `vortom/czech-craft`.
 - Commit prefixes used: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `chore`, `build`, `ci`, `style`. Match this style.
 - License: MIT.
+- **Visual assets** (item textures, mod icon, etc.): see `docs/design/asset-handbook.md` before suggesting any art change. Validate with `python3 scripts/check-asset.py --all`. Item textures must be 16×16, ≤8 colors, binary alpha; mod icon must be 128×128, ≤64 colors. v1 placeholder assets predate the handbook and intentionally fail validation — issue #3 tracks bringing them into compliance.
