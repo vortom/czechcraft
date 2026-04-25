@@ -7,8 +7,8 @@
   "authors": ["tomas.vorel"],
   "contact": {
     "homepage": "https://modrinth.com/mod/${mod_id}",
-    "sources": "https://github.com/tomas-vorel/czech-craft",
-    "issues": "https://github.com/tomas-vorel/czech-craft/issues"
+    "sources": "https://github.com/vortom/czech-craft",
+    "issues": "https://github.com/vortom/czech-craft/issues"
   },
   "license": "MIT",
   "icon": "assets/${mod_id}/icon.png",

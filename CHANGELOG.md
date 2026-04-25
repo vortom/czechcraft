@@ -17,5 +17,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MultiLoader-Template architecture: `common/` module compiles against vanilla Minecraft only; `fabric/` is a thin entry layer. Future loader modules (NeoForge planned for v3) drop in without touching `common/` source.
 - GitHub Actions: `build.yml` runs Spotless + tests + datagen verification on every push/PR; `release.yml` publishes to Modrinth and creates a GitHub Release on `v*` tags.
 
-[Unreleased]: https://github.com/tomas-vorel/czech-craft/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/tomas-vorel/czech-craft/releases/tag/v1.0.0
+[Unreleased]: https://github.com/vortom/czech-craft/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/vortom/czech-craft/releases/tag/v1.0.0
