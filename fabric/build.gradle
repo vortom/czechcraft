@@ -1,0 +1,52 @@
+plugins {
+    id "fabric-loom" version "1.7-SNAPSHOT"
+}
+
+archivesBaseName = project.mod_id
+
+loom {
+    runs {
+        datagen {
+            inherit server
+            name "Data Generation"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=${project.mod_id}"
+            runDir "build/datagen"
+        }
+    }
+}
+
+sourceSets.main.resources.srcDir "src/main/generated"
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    implementation project(":common")
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "minecraft_version": project.minecraft_version,
+                "loader_version": project.loader_version,
+                "mod_id": project.mod_id,
+                "mod_name": project.mod_name
+    }
+
+    // include the common module's resources (textures, etc.)
+    from(project(":common").sourceSets.main.resources)
+}
+
+jar {
+    from(rootProject.file("LICENSE")) { rename { "${it}_${project.mod_id}" } }
+}
