@@ -19,6 +19,7 @@ import net.minecraft.util.Identifier;
 public final class ModItems {
 
   private static final Map<Identifier, Item> ITEMS = new LinkedHashMap<>();
+  private static final Map<Identifier, Item> ITEMS_VIEW = Collections.unmodifiableMap(ITEMS);
 
   static {
     add(FoodItems.ROHLIK_PATH, FoodItems.ROHLIK);
@@ -34,7 +35,7 @@ public final class ModItems {
 
   /** Returns an unmodifiable view of every CzechCraft item, in insertion order. */
   public static Map<Identifier, Item> getAll() {
-    return Collections.unmodifiableMap(ITEMS);
+    return ITEMS_VIEW;
   }
 
   /** Registers every item with the loader-supplied helper. */
