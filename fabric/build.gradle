@@ -53,8 +53,8 @@ processResources {
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = project.mod_id
-    versionNumber = project.mod_version
-    def isSnapshot = project.mod_version.endsWith("-SNAPSHOT")
+    versionNumber = project.version
+    def isSnapshot = project.version.toString().endsWith("-SNAPSHOT")
     versionType = isSnapshot ? "alpha" : "release"
     uploadFile = remapJar
     gameVersions = [project.minecraft_version]

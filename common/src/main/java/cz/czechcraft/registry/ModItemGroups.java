@@ -17,12 +17,20 @@ public final class ModItemGroups {
   public static final String MAIN_GROUP_TRANSLATION_KEY = "itemGroup." + CzechCraft.MOD_ID;
 
   // Cached because Fabric's icon supplier is invoked every frame the creative tab is on screen.
-  private static final ItemStack MAIN_GROUP_ICON =
-      new ItemStack(ModItems.getAll().values().iterator().next());
+  // Lazy-initialised on first call so that class-loading order between ModItemGroups and ModItems
+  // cannot trigger an empty-registry crash.
+  private static ItemStack mainGroupIcon;
 
-  /** Default icon stack — first item in {@link ModItems}. */
+  /** Default icon stack — first item in {@link ModItems}, or {@link ItemStack#EMPTY} if none. */
   public static ItemStack mainGroupIcon() {
-    return MAIN_GROUP_ICON;
+    if (mainGroupIcon == null) {
+      mainGroupIcon =
+          ModItems.getAll().values().stream()
+              .findFirst()
+              .map(ItemStack::new)
+              .orElse(ItemStack.EMPTY);
+    }
+    return mainGroupIcon;
   }
 
   private ModItemGroups() {
