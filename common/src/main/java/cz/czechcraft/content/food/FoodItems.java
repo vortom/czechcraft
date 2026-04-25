@@ -6,22 +6,23 @@ import net.minecraft.item.Item;
 /**
  * Definitions of all CzechCraft food items.
  *
- * Each item is a static final field; it is registered in {@link cz.czechcraft.registry.ModItems}.
+ * <p>Each item is a static final field; it is registered in {@link
+ * cz.czechcraft.registry.ModItems}.
  */
 public final class FoodItems {
 
-    /**
-     * Rohlík — Czech bread roll. Nutrition 2 (= 1 drumstick icon), light saturation.
-     */
-    public static final Item ROHLIK = new Item(
-            new Item.Settings()
-                    .food(new FoodComponent.Builder()
-                            .nutrition(2)
-                            .saturationModifier(0.3f)
-                            .snack()
-                            .build()));
+  /** Rohlík — Czech bread roll. Nutrition 2 (= 1 drumstick icon), light saturation. */
+  public static final Item ROHLIK =
+      new Item(
+          new Item.Settings()
+              .food(
+                  new FoodComponent.Builder()
+                      .nutrition(2)
+                      .saturationModifier(0.3f)
+                      .snack()
+                      .build()));
 
-    private FoodItems() {
-        // static-only
-    }
+  private FoodItems() {
+    // static-only
+  }
 }
