@@ -21,7 +21,7 @@ public final class ModItems {
   private static final Map<Identifier, Item> ITEMS = new LinkedHashMap<>();
 
   static {
-    add("rohlik", FoodItems.ROHLIK);
+    add(FoodItems.ROHLIK_PATH, FoodItems.ROHLIK);
   }
 
   private ModItems() {

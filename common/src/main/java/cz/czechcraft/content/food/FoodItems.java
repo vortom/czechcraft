@@ -11,6 +11,8 @@ import net.minecraft.item.Item;
  */
 public final class FoodItems {
 
+  public static final String ROHLIK_PATH = "rohlik";
+
   /** Rohlík — Czech bread roll. Nutrition 2 (= 1 drumstick icon), light saturation. */
   public static final Item ROHLIK =
       new Item(

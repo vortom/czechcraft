@@ -1,5 +1,6 @@
 package cz.czechcraft.fabric.datagen;
 
+import cz.czechcraft.CzechCraft;
 import cz.czechcraft.content.food.FoodItems;
 import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -22,7 +23,7 @@ public final class ModRecipeProvider extends FabricRecipeProvider {
     ShapedRecipeJsonBuilder.create(RecipeCategory.FOOD, FoodItems.ROHLIK, 1)
         .pattern("WW")
         .input('W', Items.WHEAT)
-        .group("czechcraft:bread")
+        .group(CzechCraft.MOD_ID + ":bread")
         .criterion("has_wheat", conditionsFromItem(Items.WHEAT))
         .offerTo(exporter);
   }
