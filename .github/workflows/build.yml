@@ -27,8 +27,14 @@ jobs:
       - name: Build
         run: ./gradlew build
 
-      - name: Run datagen + verify output
-        run: ./gradlew :fabric:runDatagen :fabric:test
+      - name: Run datagen + verify committed output is current
+        run: |
+          ./gradlew :fabric:runDatagen :fabric:test
+          if ! git diff --quiet -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'; then
+            echo "::error::Datagen output is out-of-date. Run ./gradlew :fabric:runDatagen and commit the changes."
+            git diff -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'
+            exit 1
+          fi
 
       - name: Upload mod jar
         uses: actions/upload-artifact@v4
