@@ -1,7 +1,6 @@
 package cz.czechcraft.registry;
 
 import cz.czechcraft.CzechCraft;
-import cz.czechcraft.content.food.FoodItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
@@ -19,7 +18,7 @@ public final class ModItemGroups {
 
   /** Default icon stack — first item in {@link ModItems}. */
   public static ItemStack mainGroupIcon() {
-    return new ItemStack(FoodItems.ROHLIK);
+    return new ItemStack(ModItems.getAll().values().iterator().next());
   }
 
   private ModItemGroups() {
