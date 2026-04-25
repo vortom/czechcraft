@@ -35,3 +35,9 @@ Thumbs.db
 # Env / secrets
 .env
 *.local
+
+# Log4j directories created by failed test runs
+logs/
+
+# Loom datagen incremental cache (timestamps change on every run)
+fabric/src/main/generated/.cache/
