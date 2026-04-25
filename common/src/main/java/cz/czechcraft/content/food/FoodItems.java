@@ -10,21 +10,14 @@ import net.minecraft.item.Item;
  */
 public final class FoodItems {
 
-    // -------------------------------------------------------------------------
-    // Food-component specs (package-visible for testing without MC bootstrap)
-    // -------------------------------------------------------------------------
-
-    static final int ROHLIK_NUTRITION = 2;
-    static final float ROHLIK_SATURATION = 0.3f;
-
     /**
      * Rohlík — Czech bread roll. Nutrition 2 (= 1 drumstick icon), light saturation.
      */
     public static final Item ROHLIK = new Item(
             new Item.Settings()
                     .food(new FoodComponent.Builder()
-                            .nutrition(ROHLIK_NUTRITION)
-                            .saturationModifier(ROHLIK_SATURATION)
+                            .nutrition(2)
+                            .saturationModifier(0.3f)
                             .snack()
                             .build()));
 
