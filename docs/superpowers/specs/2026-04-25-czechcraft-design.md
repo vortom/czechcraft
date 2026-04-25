@@ -227,14 +227,10 @@ If a future version introduces config files, network packets, or external I/O, e
 
 ## 10. Testing
 
-Two layers, both run in CI:
+**Revised after implementation discovery:** Plain JUnit cannot run unit tests that touch `Item`, `FoodComponent`, or any Minecraft class whose static initializer reaches the registry path — Fabric Loader's runtime bytecode rewriting is what makes `RegistryEntry$Reference.setRegistryKey` accessible across packages, and that rewriting isn't active in a vanilla JUnit run. The proposed `FoodItemsTest`/`ModItemsTest`/`CzechCraftTest` were removed. We rely on:
 
-### 10.1 Unit tests (`common/src/test/java/`)
-- Framework: **JUnit 5** (`org.junit.jupiter`).
-- Mocks: **Mockito** for the `RegistryHelper` interface.
-- Coverage:
-  - `ModItemsTest` — verify `getAll()` contains exactly the expected items (exactly `czechcraft:rohlik` in v1) and that `register(helper)` invokes `helper.registerItem(...)` once per item.
-  - `FoodItemsTest` — verify Rohlík's `FoodComponent` matches the spec exactly: `nutrition == 2`, `saturationModifier == 0.3f`, `snack == true`, `alwaysEdible == false`.
+### 10.1 Compilation as type-level verification
+The Java compiler enforces correct use of the Yarn-mapped Minecraft APIs. Misuse of `FoodComponent.Builder`, wrong `Identifier` package, etc. → build fails. CI runs `./gradlew build`, so every push exercises this layer.
 
 ### 10.2 Datagen verification (`fabric/src/test/java/`)
 - CI runs `./gradlew runDatagen` before tests.
@@ -242,6 +238,8 @@ Two layers, both run in CI:
   - `data/czechcraft/recipe/rohlik.json` exists, parses, has type `minecraft:crafting_shaped`, pattern `["WW"]`, key `W = minecraft:wheat`, result `czechcraft:rohlik` count 1.
   - `assets/czechcraft/models/item/rohlik.json` exists and references `czechcraft:item/rohlik`.
   - `assets/czechcraft/lang/{en_us,cs_cz}.json` exist and contain the expected keys.
+
+  - **Note:** if `DatagenOutputTest` itself ever needs to load common-side classes that touch Minecraft, the same Bootstrap problem will reappear. Keep this test purely file-system based (read JSON from disk, assert on its contents).
 
 ### 10.3 Manual verification (documented in README)
 - `./gradlew runClient` to launch a dev Minecraft instance.
