@@ -35,6 +35,8 @@ processResources {
     inputs.property "version", project.version
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "loader_version", project.loader_version
+    inputs.property "mod_id", project.mod_id
+    inputs.property "mod_name", project.mod_name
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version,
@@ -46,10 +48,6 @@ processResources {
 
     // include the common module's resources (textures, etc.)
     from(project(":common").sourceSets.main.resources)
-}
-
-jar {
-    from(rootProject.file("LICENSE")) { rename { "${it}_${project.mod_id}" } }
 }
 
 modrinth {

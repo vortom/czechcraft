@@ -10,11 +10,3 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 }
-
-processResources {
-    inputs.property "version", project.version
-}
-
-jar {
-    from(rootProject.file("LICENSE")) { rename { "${it}_${project.mod_id}" } }
-}
