@@ -40,7 +40,26 @@ jobs:
       - name: Publish to Modrinth
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: ./gradlew :fabric:modrinth
+        # `modrinth` uploads the version jar; `modrinthSyncBody` is a separate
+        # minotaur task that pushes README.md content to the project body —
+        # without it the Modrinth listing description stays empty.
+        run: ./gradlew :fabric:modrinth :fabric:modrinthSyncBody
+
+      - name: Verify Modrinth body sync landed
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        # Fail the release if the body sync silently did nothing — e.g. PAT
+        # missing the "Write projects" scope, or minotaur task ordering broke.
+        run: |
+          body=$(curl -sf -H "Authorization: $MODRINTH_TOKEN" \
+            "https://api.modrinth.com/v2/project/czechcraft" \
+            | jq -r '.body // ""')
+          length=${#body}
+          if [ "$length" -lt 100 ]; then
+            echo "::error::Modrinth project body is suspiciously short ($length chars). Body sync likely failed — check PAT scopes and minotaur task output above."
+            exit 1
+          fi
+          echo "Modrinth body length: $length chars — sync looks healthy."
 
       - name: Extract changelog section for this tag
         id: changelog
