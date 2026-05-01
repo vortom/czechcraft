@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2026-04-25
 
 ### Added
-- **Rohlík** — Czech bread roll. Crafted from 2 wheat placed horizontally adjacent on a crafting table or 2×2 inventory grid. Restores 1 hunger drumstick (nutrition 2, saturation modifier 0.3).
+- **Rohlík** — Czech bread roll. Crafted from 2 wheat placed horizontally adjacent on a crafting table or 2×2 inventory grid. Restores 2 hunger drumsticks (nutrition 4, saturation modifier 0.3).
 - **CzechCraft** creative tab containing all CzechCraft items.
 - English (`en_us`) and Czech (`cs_cz`) translations.
 - Fabric loader support for Minecraft 26.1.x (Java 25, Mojang Mappings).

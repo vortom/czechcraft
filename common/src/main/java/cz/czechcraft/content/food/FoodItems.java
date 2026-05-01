@@ -15,12 +15,12 @@ public final class FoodItems {
 
   public static final String ROHLIK_PATH = "rohlik";
 
-  /** Rohlík — Czech bread roll. Nutrition 2 (= 1 drumstick icon), light saturation. */
+  /** Rohlík — Czech bread roll. Nutrition 4 (= 2 drumstick icons), modest saturation. */
   public static Item createRohlik(ResourceKey<Item> key) {
     return new Item(
         new Item.Properties()
             .setId(key)
-            .food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.3f).build()));
+            .food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.3f).build()));
   }
 
   private FoodItems() {

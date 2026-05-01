@@ -8,7 +8,7 @@
 
 ## What's in v1
 
-**Rohlík** — a traditional Czech bread roll. Crafted from 2 wheat placed horizontally adjacent on a crafting table or in your 2×2 inventory grid. Restores 1 hunger drumstick (nutrition 2, saturation 0.3 modifier).
+**Rohlík** — a traditional Czech bread roll. Crafted from 2 wheat placed horizontally adjacent on a crafting table or in your 2×2 inventory grid. Restores 2 hunger drumsticks (nutrition 4, saturation 0.3 modifier).
 
 ## Compatibility
 
