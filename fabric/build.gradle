@@ -75,7 +75,9 @@ modrinth {
     dependencies {
         required.project "fabric-api"
     }
-    syncBodyFrom = rootProject.file("README.md").text
+    // Player-facing description for the Modrinth listing — README.md stays
+    // developer-focused (build, architecture, extension guide).
+    syncBodyFrom = rootProject.file("MODRINTH.md").text
     changelog = rootProject.file("CHANGELOG.md").text
 }
 
