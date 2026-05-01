@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "czechcraft:bread",
+  "key": {
+    "W": "minecraft:wheat"
+  },
+  "pattern": [
+    "WW"
+  ],
+  "result": {
+    "id": "czechcraft:rohlik"
+  }
+}

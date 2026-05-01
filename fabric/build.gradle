@@ -1,0 +1,82 @@
+plugins {
+    id "net.fabricmc.fabric-loom" version "${loom_version}"
+    id "com.modrinth.minotaur"
+}
+
+base {
+    archivesName = project.mod_id
+}
+
+loom {
+    runs {
+        datagen {
+            // `inherit client` is required because FabricModelProvider moved to the client-only
+            // datagen package in MC 26.1 — server environment cannot load it.
+            inherit client
+            name "Data Generation"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=${project.mod_id}"
+            runDir "build/datagen"
+        }
+    }
+}
+
+sourceSets.main.resources.srcDir "src/main/generated"
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    // No mappings — MC 26.1+ ships unobfuscated.
+
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    implementation project(":common")
+
+    // fabric-loader-junit registers a JUnit LauncherSessionListener that bootstraps Fabric Loader
+    // (knot + registry intrusive-holder support). Without it, Item.<clinit> fails in tests with
+    // "This registry can't create intrusive holders" — vanilla Bootstrap.bootStrap is not enough.
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+    inputs.property "mod_id", project.mod_id
+    inputs.property "mod_name", project.mod_name
+    inputs.property "java_version", project.java_version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "minecraft_version": project.minecraft_version,
+                "loader_version": project.loader_version,
+                "mod_id": project.mod_id,
+                "mod_name": project.mod_name,
+                "java_version": project.java_version
+    }
+
+    // include the common module's resources (textures, etc.)
+    from(project(":common").sourceSets.main.resources)
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = project.mod_id
+    versionNumber = project.version
+    def isSnapshot = project.version.toString().endsWith("-SNAPSHOT")
+    versionType = isSnapshot ? "alpha" : "release"
+    uploadFile = jar
+    // Publish for the whole 26.1.x line — fabric.mod.json's tilde matcher already accepts these at runtime.
+    gameVersions = ["26.1", "26.1.1", "26.1.2"]
+    loaders = ["fabric"]
+    dependencies {
+        required.project "fabric-api"
+    }
+    syncBodyFrom = rootProject.file("README.md").text
+    changelog = rootProject.file("CHANGELOG.md").text
+}
+
+tasks.modrinth.dependsOn tasks.jar

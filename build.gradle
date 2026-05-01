@@ -1,0 +1,47 @@
+plugins {
+    id "java"
+    id "com.diffplug.spotless" version "7.0.2" apply false
+    id "com.modrinth.minotaur" version "2.9.0" apply false
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "com.diffplug.spotless"
+
+    group = project.mod_group
+    version = project.mod_version
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(project.java_version as int)
+        }
+        withSourcesJar()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+        options.release = project.java_version as int
+    }
+
+    repositories {
+        maven { url = "https://maven.fabricmc.net/" }
+        mavenCentral()
+    }
+
+    spotless {
+        java {
+            googleJavaFormat("1.35.0")
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    jar {
+        from(rootProject.file("LICENSE")) { rename { "${it}_${project.mod_id}" } }
+    }
+}

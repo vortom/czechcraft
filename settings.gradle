@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories {
+        maven { url = "https://maven.fabricmc.net/" }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    // Allows Gradle toolchain machinery to auto-download a matching JDK
+    // when the local machine does not have one (e.g. CI runners).
+    id "org.gradle.toolchains.foojay-resolver-convention" version "1.0.0"
+}
+
+rootProject.name = "czechcraft"
+
+include "common"
+include "fabric"

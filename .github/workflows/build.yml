@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Spotless check
+        run: ./gradlew spotlessCheck
+
+      - name: Run datagen
+        run: ./gradlew :fabric:runDatagen
+
+      - name: Verify committed datagen output is current
+        run: |
+          if ! git diff --quiet -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'; then
+            echo "::error::Datagen output is out-of-date. Run ./gradlew :fabric:runDatagen and commit the changes."
+            git diff -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'
+            exit 1
+          fi
+
+      - name: Build (compiles + runs tests with generated output in place)
+        run: ./gradlew build
+
+      - name: Upload mod jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: czechcraft-jar
+          path: fabric/build/libs/*.jar

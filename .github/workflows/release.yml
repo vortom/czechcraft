@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run datagen
+        run: ./gradlew :fabric:runDatagen
+
+      - name: Verify committed datagen output is current
+        run: |
+          if ! git diff --quiet -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'; then
+            echo "::error::Datagen output is out-of-date. Run ./gradlew :fabric:runDatagen and commit the changes."
+            git diff -- 'fabric/src/main/generated/' ':!fabric/src/main/generated/.cache/'
+            exit 1
+          fi
+
+      - name: Build (compiles + runs tests with generated output in place)
+        run: ./gradlew build
+
+      - name: Publish to Modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: ./gradlew :fabric:modrinth
+
+      - name: Extract changelog section for this tag
+        id: changelog
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          # Pull the section between "## [TAG]" and the next "## [" header.
+          awk -v tag="$TAG" '
+            $0 ~ "^## \\[" tag "\\]" { found=1; next }
+            found && /^## \[/        { exit }
+            found                    { print }
+          ' CHANGELOG.md > release-body.md
+          echo "body_path=release-body.md" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: ${{ steps.changelog.outputs.body_path }}
+          files: fabric/build/libs/*.jar

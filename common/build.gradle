@@ -1,0 +1,12 @@
+plugins {
+    id "net.fabricmc.fabric-loom" version "${loom_version}"
+}
+
+loom {
+    // common module: no fabric runs, just vanilla MC for compilation + tests.
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    // No mappings — MC 26.1+ ships unobfuscated with parameter names.
+}
