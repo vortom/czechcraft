@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Rohlík** — Czech bread roll. Crafted from 2 wheat placed horizontally adjacent on a crafting table or 2×2 inventory grid. Restores 1 hunger drumstick (nutrition 2, saturation modifier 0.3).
 - **CzechCraft** creative tab containing all CzechCraft items.
 - English (`en_us`) and Czech (`cs_cz`) translations.
-- Fabric loader support for Minecraft 1.21.1 (Java 21).
+- Fabric loader support for Minecraft 26.1.x (Java 25, Mojang Mappings).
 - MultiLoader-Template architecture: `common/` module compiles against vanilla Minecraft only; `fabric/` is a thin entry layer. Future loader modules (NeoForge planned for v3) drop in without touching `common/` source.
 - GitHub Actions: `build.yml` runs Spotless + tests + datagen verification on every push/PR; `release.yml` publishes to Modrinth and creates a GitHub Release on `v*` tags.
 

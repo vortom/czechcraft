@@ -34,11 +34,10 @@ class DatagenOutputTest {
     assertEquals("WW", pattern.get(0).getAsString());
 
     var key = root.getAsJsonObject("key");
-    assertEquals("minecraft:wheat", key.getAsJsonObject("W").get("item").getAsString());
+    assertEquals("minecraft:wheat", key.get("W").getAsString());
 
     var result = root.getAsJsonObject("result");
     assertEquals(ROHLIK_QUALIFIED_ID, result.get("id").getAsString());
-    assertEquals(1, result.get("count").getAsInt());
   }
 
   @Test
@@ -51,6 +50,14 @@ class DatagenOutputTest {
                     + "/models/item/"
                     + FoodItems.ROHLIK_PATH
                     + ".json")));
+  }
+
+  @Test
+  void itemDefinitionExists() {
+    assertTrue(
+        Files.exists(
+            GENERATED.resolve(
+                "assets/" + CzechCraft.MOD_ID + "/items/" + FoodItems.ROHLIK_PATH + ".json")));
   }
 
   @Test

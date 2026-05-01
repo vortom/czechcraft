@@ -14,16 +14,16 @@
 
 | | |
 |---|---|
-| Minecraft | 1.21.1 |
+| Minecraft | 26.1.x (26.1, 26.1.1, 26.1.2) |
 | Loader | Fabric (NeoForge planned for v3) |
-| Java | 21 |
+| Java | 25 |
 | Required deps | [Fabric API](https://modrinth.com/mod/fabric-api) |
 
 Compatible with Sodium, Iris, and other QoL/optimisation mods on Fabric.
 
 ## Installation (players)
 
-1. Install the [Fabric loader](https://fabricmc.net/use/) for Minecraft 1.21.1.
+1. Install the [Fabric loader](https://fabricmc.net/use/) for Minecraft 26.1 (or 26.1.1 / 26.1.2).
 2. Install [Fabric API](https://modrinth.com/mod/fabric-api).
 3. Download the latest `czechcraft-X.Y.Z.jar` from [Modrinth](https://modrinth.com/mod/czechcraft) or [GitHub Releases](https://github.com/vortom/czech-craft/releases).
 4. Drop it into `.minecraft/mods/`.
@@ -31,7 +31,7 @@ Compatible with Sodium, Iris, and other QoL/optimisation mods on Fabric.
 ## Development
 
 ### Prerequisites
-- JDK 21 (Temurin recommended).
+- JDK 25 (Temurin recommended). Gradle's toolchain auto-provisioning will download it on first build if missing.
 - Git.
 
 ### Build
@@ -80,11 +80,11 @@ See [`docs/superpowers/specs/2026-04-25-czechcraft-design.md`](docs/superpowers/
 
 To add e.g. **Pivo** (Czech beer):
 
-1. Create `common/src/main/java/cz/czechcraft/content/drink/Drinks.java` with `public static final Item PIVO = new Item(new Item.Settings()...)`.
-2. Add one line in `common/src/main/java/cz/czechcraft/registry/ModItems.java` static initialiser: `add("pivo", Drinks.PIVO);`.
+1. Create `common/src/main/java/cz/czechcraft/content/drink/Drinks.java` with `public static Item createPivo(ResourceKey<Item> key) { return new Item(new Item.Properties().setId(key)...); }` and a `PIVO_PATH = "pivo"` constant.
+2. Add one line in `common/src/main/java/cz/czechcraft/registry/ModItems.java`: `public static final Item PIVO = add(Drinks.PIVO_PATH, Drinks::createPivo);`.
 3. Add a recipe in `fabric/src/main/java/cz/czechcraft/fabric/datagen/ModRecipeProvider.java`.
 4. Add lang strings in `ModEnglishLangProvider` and `ModCzechLangProvider`.
-5. Drop a 16×16 PNG in `common/src/main/resources/assets/czechcraft/textures/item/pivo.png`.
+5. Drop a 16×16 PNG in `common/src/main/resources/assets/czechcraft/textures/item/pivo.png` — see `docs/design/asset-handbook.md`.
 6. `./gradlew :fabric:runDatagen` then commit.
 
 The creative tab auto-populates from `ModItems.getAll()`. No other files change.

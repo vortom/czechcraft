@@ -1,7 +1,7 @@
 package cz.czechcraft.platform;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 
 /**
  * Loader-agnostic abstraction for registering objects. Each loader module (fabric, neoforge, ...)
@@ -9,5 +9,5 @@ import net.minecraft.util.Identifier;
  */
 public interface RegistryHelper {
 
-  void registerItem(Identifier id, Item item);
+  void registerItem(ResourceKey<Item> key, Item item);
 }

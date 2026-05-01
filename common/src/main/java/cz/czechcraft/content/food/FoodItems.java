@@ -1,12 +1,14 @@
 package cz.czechcraft.content.food;
 
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.item.Item;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 
 /**
  * Definitions of all CzechCraft food items.
  *
- * <p>Each item is a static final field; it is registered in {@link
+ * <p>Each item is built by a factory method that takes a {@code ResourceKey<Item>} (required by
+ * {@code Item.Properties.setId} since MC 26.1) and is invoked from {@link
  * cz.czechcraft.registry.ModItems}.
  */
 public final class FoodItems {
@@ -14,15 +16,12 @@ public final class FoodItems {
   public static final String ROHLIK_PATH = "rohlik";
 
   /** Rohlík — Czech bread roll. Nutrition 2 (= 1 drumstick icon), light saturation. */
-  public static final Item ROHLIK =
-      new Item(
-          new Item.Settings()
-              .food(
-                  new FoodComponent.Builder()
-                      .nutrition(2)
-                      .saturationModifier(0.3f)
-                      .snack()
-                      .build()));
+  public static Item createRohlik(ResourceKey<Item> key) {
+    return new Item(
+        new Item.Properties()
+            .setId(key)
+            .food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.3f).build()));
+  }
 
   private FoodItems() {
     // static-only

@@ -1,32 +1,37 @@
 # CzechCraft — guidance for Claude
 
-Minecraft Fabric mod (Java 21, MC 1.21.1). Multi-loader-ready architecture: `common/` (loader-agnostic, vanilla MC only) + `fabric/` (Fabric entry layer). Future `neoforge/` mirrors `fabric/`.
+Minecraft Fabric mod (Java 25, MC 26.1.x). Multi-loader-ready architecture: `common/` (loader-agnostic, vanilla MC only) + `fabric/` (Fabric entry layer). Future `neoforge/` mirrors `fabric/`.
 
-Spec: `docs/superpowers/specs/2026-04-25-czechcraft-design.md`. Plan: `docs/superpowers/plans/2026-04-25-czechcraft-v1.md`. Read these before non-trivial work.
+Spec: `docs/superpowers/specs/2026-04-25-czechcraft-design.md`. Plan: `docs/superpowers/plans/2026-04-25-czechcraft-v1.md`. MC 26.1 port plan: `docs/superpowers/plans/2026-05-01-mc-26.1-port.md`. Read these before non-trivial work.
 
 ## Architectural rules (compiler-enforced — don't break them)
 - `common/` Java may import only `net.minecraft.*` + `org.slf4j.*`. NO `net.fabricmc.*`. Compile fails if violated (Fabric API isn't on `common/`'s classpath).
 - Cross-loader assets (textures) → `common/src/main/resources/`. Fabric-only metadata (`fabric.mod.json`, mixin config) → `fabric/src/main/resources/`. Datagen output → `fabric/src/main/generated/` (committed).
 - The `RegistryHelper` interface in `common/platform/` is the only seam between `common/` and loaders. Keep it minimal; each loader supplies a concrete impl.
+- Items must be constructed with `new Item.Properties().setId(ResourceKey<Item>)` *before* registration — the 26.1 unobfuscation made `setId` mandatory at construction time. `ModItems` uses a factory pattern (`Function<ResourceKey<Item>, Item>`) so each item knows its key at birth.
 
 ## Build & dev commands
-- `./gradlew build` — full build incl. tests + Spotless. First run: 10+ min (Loom downloads MC). After: seconds.
+- `./gradlew build` — full build incl. tests + Spotless. First run: 10+ min (Loom downloads MC + JDK 25 via toolchain). After: seconds.
 - `./gradlew :fabric:runClient` — launch dev Minecraft client with the mod.
-- `./gradlew :fabric:runDatagen` — regenerate recipe/model/lang JSON. Commit the resulting `fabric/src/main/generated/` changes (excluding `.cache/`, which is gitignored).
+- `./gradlew :fabric:runDatagen` — regenerate recipe/model/lang JSON. Datagen runs in CLIENT environment (model providers are now client-only in 26.1). Commit the resulting `fabric/src/main/generated/` changes (excluding `.cache/`, which is gitignored).
 - `./gradlew spotlessApply` — auto-format Java to Google Java Format (2-space). CI runs `spotlessCheck` and fails on violations.
-- All version pins (MC, Yarn, Loader, Fabric API, mod_version, Java) live in `gradle.properties`. Bump there, nowhere else.
+- All version pins (MC, Loader, Loom, Fabric API, mod_version, Java) live in `gradle.properties`. Bump there, nowhere else. (No `yarn_mappings` line — MC 26.1+ ships unobfuscated.)
 
 ## Gotchas (encountered the hard way)
-- **No JUnit tests in `common/`.** Plain JUnit can't run anything that touches `Item`/`FoodComponent` — Fabric Loader's runtime bytecode rewriting (which makes `RegistryEntry$Reference.setRegistryKey` accessible cross-package) isn't active in plain JUnit. Verify behavior via (a) compilation, (b) `fabric/`'s file-system datagen tests in `DatagenOutputTest`, (c) manual `runClient`.
-- **Loom multi-module:** the `fabric/` module must depend on `common` via `implementation project(path: ":common", configuration: "namedElements")` — plain `project(":common")` resolves the intermediary jar and Knot can't load Yarn-named MC classes at runtime.
+- **JUnit tests live in `fabric/src/test/`, not `common/`.** With unobfuscated 26.1, `Item`/`FoodProperties` instantiation works in plain JUnit if you bootstrap with `SharedConstants.tryDetectVersion(); Bootstrap.bootStrap();` (`net.minecraft.server.Bootstrap`). The `fabric/` test classpath has the full Loader+Mixin runtime via Loom. Pure `common/test/` would require manually wiring Loader+Mixin+ASM, so prefer `fabric/test/` and reference common classes through the project dependency.
+- **`Item.components()` returns null pre-registration.** Unit tests can construct items via factories but cannot inspect data components on them — those bind only after `Registry.register`. Verify component values via `runClient` smoke test, not JUnit.
+- **Datagen needs `inherit client`** in the Loom run config — `FabricModelProvider` moved to the `net.fabricmc.fabric.api.client.datagen.v1.provider` package and crashes in SERVER environment.
+- **Loom multi-module:** plain `implementation project(":common")` works in 26.1 (unobfuscated MC has no `namedElements` configuration to worry about).
 - **Gradle plugin classloader:** plugins applied only in subprojects (e.g. `com.modrinth.minotaur`) can collide with fabric-loom-SNAPSHOT's `BuildSharedServiceManager`. Pattern: declare in root `build.gradle` with `apply false`, apply (without version) in the subproject.
 - **`processResources.expand` cache:** every key used in `expand` must also be declared via `inputs.property` — otherwise stale outputs survive `gradle.properties` changes silently.
 - **`fabric/src/main/generated/.cache/`** files contain timestamps that re-dirty on every datagen run — gitignored by design.
+- **JDK toolchain auto-provisioning:** Gradle 9 doesn't bundle the foojay resolver. We declare it in `settings.gradle` so CI runners without JDK 25 can auto-download one.
+- **Configuration cache must be off** (`org.gradle.configuration-cache=false` in `gradle.properties`) — IntelliJ + Loom 1.15 combo isn't fully compatible. See fabric-loom #1349.
 
 ## Adding new content (extension pattern)
-1. New item class in `common/src/main/java/cz/czechcraft/content/<category>/<Name>.java` with `public static final Item ...` + a `<NAME>_PATH = "..."` constant.
-2. One line in `ModItems` static initialiser: `add(<Name>.<NAME>_PATH, <Name>.<INSTANCE>);`.
-3. Provider entries: recipe in `ModRecipeProvider.generate`, lang in `ModEnglishLangProvider`/`ModCzechLangProvider`, model in `ModModelProvider.generateItemModels`.
+1. New factory method in `common/src/main/java/cz/czechcraft/content/<category>/<Name>.java`: `public static Item create<Name>(ResourceKey<Item> key) { return new Item(new Item.Properties().setId(key)...); }` + a `<NAME>_PATH = "..."` constant.
+2. One line in `ModItems` static fields: `public static final Item <NAME> = add(<Name>.<NAME>_PATH, <Name>::create<Name>);`.
+3. Provider entries: recipe in `ModRecipeProvider.createRecipeProvider`'s inner `RecipeProvider`, lang in `ModEnglishLangProvider`/`ModCzechLangProvider`, model in `ModModelProvider.generateItemModels`.
 4. Texture at `common/src/main/resources/assets/czechcraft/textures/item/<path>.png` (16×16 PNG).
 5. `./gradlew :fabric:runDatagen` and commit the regenerated files.
 
@@ -43,4 +48,4 @@ Prereq: `MODRINTH_TOKEN` repo secret set (Modrinth PAT with "Create version" sco
 - Java package root: `cz.czechcraft`. Mod ID: `czechcraft`. Modrinth slug: `czechcraft`. GitHub: `vortom/czech-craft`.
 - Commit prefixes used: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `chore`, `build`, `ci`, `style`. Match this style.
 - License: MIT.
-- **Visual assets** (item textures, mod icon, etc.): see `docs/design/asset-handbook.md` before suggesting any art change. Validate with `python3 scripts/check-asset.py --all`. Item textures must be 16×16, ≤8 colors, binary alpha; mod icon must be 128×128, ≤64 colors. v1 placeholder assets predate the handbook and intentionally fail validation — issue #3 tracks bringing them into compliance.
+- **Visual assets** (item textures, mod icon, etc.): see `docs/design/asset-handbook.md` before suggesting any art change. Validate with `python3 scripts/check-asset.py --all`. The handbook adopted the designer's illustration-style as canonical in v1; the `check-asset.py` validator enforces dimensions/filename/file-size only.

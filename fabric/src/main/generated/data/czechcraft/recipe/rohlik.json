@@ -3,15 +3,12 @@
   "category": "misc",
   "group": "czechcraft:bread",
   "key": {
-    "W": {
-      "item": "minecraft:wheat"
-    }
+    "W": "minecraft:wheat"
   },
   "pattern": [
     "WW"
   ],
   "result": {
-    "count": 1,
     "id": "czechcraft:rohlik"
   }
 }
