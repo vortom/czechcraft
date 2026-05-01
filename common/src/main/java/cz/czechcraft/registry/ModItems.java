@@ -22,6 +22,7 @@ import net.minecraft.world.item.Item;
  */
 public final class ModItems {
 
+  // ITEMS must be declared before any field that calls add() — JLS static-init order.
   private static final Map<ResourceKey<Item>, Item> ITEMS = new LinkedHashMap<>();
   private static final Map<ResourceKey<Item>, Item> ITEMS_VIEW = Collections.unmodifiableMap(ITEMS);
 

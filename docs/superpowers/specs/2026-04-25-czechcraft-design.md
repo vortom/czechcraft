@@ -114,7 +114,7 @@ czech-craft/
 | Component | Module | Responsibility | Loader-aware? |
 |---|---|---|---|
 | `CzechCraft` | common | Holds `MOD_ID = "czechcraft"`, `LOGGER`, exposes `init(RegistryHelper)` that calls `ModItems.register(...)` | No |
-| `FoodItems` | common | Defines `ROHLIK = new Item(new Item.Settings().food(...))` with `nutrition=2, saturation=0.3f` | No |
+| `FoodItems` | common | Defines `createRohlik(ResourceKey<Item>)` factory returning `new Item(new Item.Properties().setId(key).food(...))` with `nutrition=4, saturation=0.3f` | No |
 | `ModItems` | common | Central registry; `register(helper)` registers each item; `getAll()` returns a stable iteration order | No |
 | `ModItemGroups` | common | Defines a `CzechCraft` creative tab populated from `ModItems.getAll()` | No |
 | `RegistryHelper` | common (interface) | `void registerItem(Identifier id, Item item)` — abstracts the actual registry call | No |
@@ -135,14 +135,15 @@ czech-craft/
 | Identifier | `czechcraft:rohlik` |
 | Display name (en_us) | Rohlík |
 | Display name (cs_cz) | Rohlík |
-| `FoodComponent.nutrition` | **2** (= 1 drumstick icon restored) |
-| `FoodComponent.saturation` (modifier) | **0.3f** (yields ~1.2 saturation; cookie-tier "light snack") |
+| `FoodProperties.nutrition` | **4** (= 2 drumstick icons restored) |
+| `FoodProperties.saturationModifier` | **0.3f** (yields ~2.4 saturation; between cookie and bread) |
 | `alwaysEdible` | false (default — cannot eat at full hunger) |
-| `snack` | true (faster eating animation, fits a small bread roll) |
 | Max stack size | 64 (default) |
 | Creative tab | CzechCraft |
 
-Rationale: the user explicitly chose option B — "2 hunger bars" = 2 half-shanks = nutrition 2. The 0.3 saturation modifier matches cookie-tier (rohlík is a small light bread roll, lighter than vanilla bread which is nutrition 5).
+Rationale: the user wants "2 hunger bars" = 2 drumstick icons = nutrition 4 (Minecraft hunger uses 1 drumstick = 2 nutrition points). The 0.3 saturation modifier sits between vanilla cookie (`nutrition=2, mod=0.1`) and bread (`nutrition=5, mod=0.6`). The original spec briefly used `nutrition=2` due to a units misreading; corrected during internal testing — see PR #12.
+
+> **MC 26.1 note:** the `FoodProperties.snack()` method was removed from the builder (the `Consumable` data component took over fast-eat semantics). Rohlík uses default eat speed.
 
 ---
 
@@ -183,8 +184,8 @@ Player crafts (in-game)
    (vanilla shaped-crafting machinery; no mod code involved)
 
 Player eats Rohlík
-   FoodComponent(nutrition=2, saturation=0.3) →
-       hunger meter +2 (= 1 drumstick), saturation +1.2
+   FoodProperties(nutrition=4, saturationModifier=0.3) →
+       hunger meter +4 (= 2 drumsticks), saturation +2.4
    (vanilla food machinery; no mod code involved)
 ```
 
@@ -245,7 +246,7 @@ The Java compiler enforces correct use of the Yarn-mapped Minecraft APIs. Misuse
 - `./gradlew runClient` to launch a dev Minecraft instance.
 - Verify CzechCraft tab appears in creative menu.
 - Verify Rohlík can be crafted from 2 wheat in both crafting table and 2×2 inventory grid.
-- Verify eating Rohlík restores 1 drumstick of hunger.
+- Verify eating Rohlík restores 2 drumsticks of hunger.
 - No automated gametest harness in v1 — overkill for one item.
 
 ---

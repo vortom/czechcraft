@@ -23,8 +23,7 @@ public final class CzechCraftItemGroupFabric {
         FabricCreativeModeTab.builder()
             .icon(ModItemGroups::mainGroupIcon)
             .title(Component.translatable(ModItemGroups.MAIN_GROUP_TRANSLATION_KEY))
-            .displayItems(
-                (displayContext, entries) -> ModItems.getAll().values().forEach(entries::accept))
+            .displayItems((_, entries) -> ModItems.getAll().values().forEach(entries::accept))
             .build();
 
     Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ModItemGroups.MAIN_GROUP_KEY, tab);

@@ -27,6 +27,7 @@ Spec: `docs/superpowers/specs/2026-04-25-czechcraft-design.md`. Plan: `docs/supe
 - **`fabric/src/main/generated/.cache/`** files contain timestamps that re-dirty on every datagen run — gitignored by design.
 - **JDK toolchain auto-provisioning:** Gradle 9 doesn't bundle the foojay resolver. We declare it in `settings.gradle` so CI runners without JDK 25 can auto-download one.
 - **Configuration cache must be off** (`org.gradle.configuration-cache=false` in `gradle.properties`) — IntelliJ + Loom 1.15 combo isn't fully compatible. See fabric-loom #1349.
+- **Mixins not in use yet** — when adding any mixin, verify Mixin's ASM version supports JDK 25 bytecode. The empty `czechcraft.mixins.json` ships at `compatibilityLevel: JAVA_25` so the wiring is ready, but no actual transformer has been exercised against the new bytecode yet.
 
 ## Adding new content (extension pattern)
 1. New factory method in `common/src/main/java/cz/czechcraft/content/<category>/<Name>.java`: `public static Item create<Name>(ResourceKey<Item> key) { return new Item(new Item.Properties().setId(key)...); }` + a `<NAME>_PATH = "..."` constant.
