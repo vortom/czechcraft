@@ -103,7 +103,7 @@ czech-craft/
 ```
 MIT License
 
-Copyright (c) 2026 tomas.vorel and CzechCraft contributors
+Copyright (c) 2026 Someone_Cz and CzechCraft contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -981,7 +981,7 @@ git commit -m "build(fabric): add fabric module with loom + fabric-api + datagen
   "version": "${version}",
   "name": "${mod_name}",
   "description": "Czech-themed food and drinks for Minecraft. v1 adds the Rohlík — a traditional Czech bread roll, crafted from two wheat.",
-  "authors": ["tomas.vorel"],
+  "authors": ["Someone_Cz"],
   "contact": {
     "homepage": "https://modrinth.com/mod/${mod_id}",
     "sources": "https://github.com/vortom/czech-craft",
@@ -1964,7 +1964,7 @@ The creative tab auto-populates from `ModItems.getAll()`. No other files change.
 
 ## License
 
-[MIT](LICENSE) © 2026 tomas.vorel and CzechCraft contributors.
+[MIT](LICENSE) © 2026 Someone_Cz and CzechCraft contributors.
 ```
 
 - [ ] **Step 2: Commit**

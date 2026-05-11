@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "${mod_name}",
   "description": "Czech-themed food, drinks and items for Minecraft. v1 adds the Rohlík — a traditional Czech bread roll. More Czech content coming in future versions.",
-  "authors": ["tomas.vorel"],
+  "authors": ["Someone_Cz"],
   "contact": {
     "homepage": "https://modrinth.com/mod/${mod_id}",
     "sources": "https://github.com/vortom/czech-craft",

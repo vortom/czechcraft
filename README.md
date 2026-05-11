@@ -98,4 +98,4 @@ The creative tab auto-populates from `ModItems.getAll()`. No other files change.
 
 ## License
 
-[MIT](LICENSE) © 2026 tomas.vorel and CzechCraft contributors.
+[MIT](LICENSE) © 2026 Someone_Cz and CzechCraft contributors.

@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-25
 **Status:** Approved
-**Authors:** tomas.vorel (with Claude)
+**Authors:** Someone_Cz (with Claude)
 **Scope:** v1 — Fabric-only, single item (Rohlík). Architecture is multi-loader-ready so NeoForge (v3) and additional content (Pivo in v2) drop in without rewrites.
 
 ---
