@@ -28,7 +28,7 @@
 ## File structure (final state at end of v1)
 
 ```
-czech-craft/
+czechcraft/
 ├── .editorconfig                                  Task 1
 ├── .gitignore                                     Task 1
 ├── LICENSE                                        Task 1
@@ -984,8 +984,8 @@ git commit -m "build(fabric): add fabric module with loom + fabric-api + datagen
   "authors": ["Someone_Cz"],
   "contact": {
     "homepage": "https://modrinth.com/mod/${mod_id}",
-    "sources": "https://github.com/vortom/czech-craft",
-    "issues": "https://github.com/vortom/czech-craft/issues"
+    "sources": "https://github.com/vortom/czechcraft",
+    "issues": "https://github.com/vortom/czechcraft/issues"
   },
   "license": "MIT",
   "icon": "assets/${mod_id}/icon.png",
@@ -1847,8 +1847,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MultiLoader-Template architecture: `common/` module compiles against vanilla Minecraft only; `fabric/` is a thin entry layer. Future loader modules (NeoForge planned for v3) drop in without touching `common/` source.
 - GitHub Actions: `build.yml` runs Spotless + tests + datagen verification on every push/PR; `release.yml` publishes to Modrinth and creates a GitHub Release on `v*` tags.
 
-[Unreleased]: https://github.com/vortom/czech-craft/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/vortom/czech-craft/releases/tag/v1.0.0
+[Unreleased]: https://github.com/vortom/czechcraft/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/vortom/czechcraft/releases/tag/v1.0.0
 ```
 
 - [ ] **Step 2: Commit**
@@ -1872,7 +1872,7 @@ git commit -m "docs: add v1.0.0 changelog entry"
 
 > Czech-themed food and drinks for Minecraft.
 
-[![Build](https://github.com/vortom/czech-craft/actions/workflows/build.yml/badge.svg)](https://github.com/vortom/czech-craft/actions/workflows/build.yml)
+[![Build](https://github.com/vortom/czechcraft/actions/workflows/build.yml/badge.svg)](https://github.com/vortom/czechcraft/actions/workflows/build.yml)
 [![Modrinth](https://img.shields.io/modrinth/dt/czechcraft?label=Modrinth)](https://modrinth.com/mod/czechcraft)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -1895,7 +1895,7 @@ Compatible with Sodium, Iris, and other QoL/optimisation mods on Fabric.
 
 1. Install the [Fabric loader](https://fabricmc.net/use/) for Minecraft 1.21.1.
 2. Install [Fabric API](https://modrinth.com/mod/fabric-api).
-3. Download the latest `czechcraft-X.Y.Z.jar` from [Modrinth](https://modrinth.com/mod/czechcraft) or [GitHub Releases](https://github.com/vortom/czech-craft/releases).
+3. Download the latest `czechcraft-X.Y.Z.jar` from [Modrinth](https://modrinth.com/mod/czechcraft) or [GitHub Releases](https://github.com/vortom/czechcraft/releases).
 4. Drop it into `.minecraft/mods/`.
 
 ## Development

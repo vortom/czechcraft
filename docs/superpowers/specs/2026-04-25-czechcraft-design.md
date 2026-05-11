@@ -47,7 +47,7 @@ All version pins live in `gradle.properties` so a version bump touches one file.
 ## 3. Repository / module architecture
 
 ```
-czech-craft/
+czechcraft/
 ├── settings.gradle                  ← composite build: include "common" + "fabric"
 ├── build.gradle                     ← root: shared plugin config, Java 21, repos
 ├── gradle.properties                ← all version pins (mc, fabric, loom, mod_version)

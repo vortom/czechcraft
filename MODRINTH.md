@@ -32,7 +32,7 @@ CzechCraft is going to grow with more Czech classics in future versions. Planned
 - **Špekáček** — Czech grilling sausage (beautiful with Pivo).
 - **Smažený sýr** — fried cheese.
 
-Track progress on the [GitHub issue tracker](https://github.com/vortom/czech-craft/issues).
+Track progress on the [GitHub issue tracker](https://github.com/vortom/czechcraft/issues).
 
 ---
 
@@ -61,10 +61,10 @@ Compatible with **Sodium**, **Iris**, and other QoL / optimisation Fabric mods.
 
 ## License & contributing
 
-Open source under the [MIT license](https://github.com/vortom/czech-craft/blob/main/LICENSE) — fork it, learn from it, build on it.
+Open source under the [MIT license](https://github.com/vortom/czechcraft/blob/main/LICENSE) — fork it, learn from it, build on it.
 
-- **Source & issues:** [github.com/vortom/czech-craft](https://github.com/vortom/czech-craft)
-- **Artwork contributions:** see the [asset design handbook](https://github.com/vortom/czech-craft/blob/main/docs/design/asset-handbook.md).
-- **Bug reports / feature ideas:** [GitHub Issues](https://github.com/vortom/czech-craft/issues).
+- **Source & issues:** [github.com/vortom/czechcraft](https://github.com/vortom/czechcraft)
+- **Artwork contributions:** see the [asset design handbook](https://github.com/vortom/czechcraft/blob/main/docs/design/asset-handbook.md).
+- **Bug reports / feature ideas:** [GitHub Issues](https://github.com/vortom/czechcraft/issues).
 
 If you enjoy CzechCraft, leaving a ❤️ on the Modrinth listing helps a lot.

@@ -10,7 +10,7 @@
 
 **CzechCraft** is a small Minecraft mod (Java Edition, Fabric loader, 1.21.1) that adds Czech-themed food and drinks to the game. v1 introduces a single item — **Rohlík**, a traditional Czech bread roll — crafted by placing two wheat side-by-side. Future versions will add more Czech food and drinks (e.g. *Pivo* — Czech beer).
 
-The mod is published on [Modrinth](https://modrinth.com/mod/czechcraft) and is open-source under MIT (https://github.com/vortom/czech-craft). Tone: light, friendly, faithful to Minecraft's vanilla aesthetic — not realistic, not cartoony.
+The mod is published on [Modrinth](https://modrinth.com/mod/czechcraft) and is open-source under MIT (https://github.com/vortom/czechcraft). Tone: light, friendly, faithful to Minecraft's vanilla aesthetic — not realistic, not cartoony.
 
 ---
 

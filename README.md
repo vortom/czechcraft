@@ -2,7 +2,7 @@
 
 > Czech-themed food and drinks for Minecraft.
 
-[![Build](https://github.com/vortom/czech-craft/actions/workflows/build.yml/badge.svg)](https://github.com/vortom/czech-craft/actions/workflows/build.yml)
+[![Build](https://github.com/vortom/czechcraft/actions/workflows/build.yml/badge.svg)](https://github.com/vortom/czechcraft/actions/workflows/build.yml)
 [![Modrinth](https://img.shields.io/modrinth/dt/czechcraft?label=Modrinth)](https://modrinth.com/mod/czechcraft)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -25,7 +25,7 @@ Compatible with Sodium, Iris, and other QoL/optimisation mods on Fabric.
 
 1. Install the [Fabric loader](https://fabricmc.net/use/) for Minecraft 26.1 (or 26.1.1 / 26.1.2).
 2. Install [Fabric API](https://modrinth.com/mod/fabric-api).
-3. Download the latest `czechcraft-X.Y.Z.jar` from [Modrinth](https://modrinth.com/mod/czechcraft) or [GitHub Releases](https://github.com/vortom/czech-craft/releases).
+3. Download the latest `czechcraft-X.Y.Z.jar` from [Modrinth](https://modrinth.com/mod/czechcraft) or [GitHub Releases](https://github.com/vortom/czechcraft/releases).
 4. Drop it into `.minecraft/mods/`.
 
 ## Development

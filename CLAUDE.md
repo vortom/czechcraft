@@ -53,7 +53,7 @@ Creative tab auto-populates from `ModItems.getAll()` — don't touch `CzechCraft
 - **Per-version environment metadata** (Modrinth's March 2026 overhaul) lives in v3 API only — minotaur 2.9.0 has no DSL for it. `release.yml` PATCHes `environment=client_and_server` after upload and read-back-asserts. Value is hardcoded; if a future module becomes one-sided, update the workflow step + verify assertion together.
 
 ## Conventions
-- Java package root: `cz.czechcraft`. Mod ID: `czechcraft`. Modrinth slug: `czechcraft`. GitHub: `vortom/czech-craft`.
+- Java package root: `cz.czechcraft`. Mod ID: `czechcraft`. Modrinth slug: `czechcraft`. GitHub: `vortom/czechcraft`.
 - Commit prefixes used: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `chore`, `build`, `ci`, `style`. Match this style.
 - License: MIT.
 - **Visual assets** (item textures, mod icon, etc.): see `docs/design/asset-handbook.md` before suggesting any art change. Validate with `python3 scripts/check-asset.py --all`. The handbook adopted the designer's illustration-style as canonical in v1; the `check-asset.py` validator enforces dimensions/filename/file-size only.
