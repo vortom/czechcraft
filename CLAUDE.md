@@ -10,9 +10,6 @@ Spec: `docs/superpowers/specs/2026-04-25-czechcraft-design.md`. Plan: `docs/supe
 - The `RegistryHelper` interface in `common/platform/` is the only seam between `common/` and loaders. Keep it minimal; each loader supplies a concrete impl.
 - Items must be constructed with `new Item.Properties().setId(ResourceKey<Item>)` *before* registration — the 26.1 unobfuscation made `setId` mandatory at construction time. `ModItems` uses a factory pattern (`Function<ResourceKey<Item>, Item>`) so each item knows its key at birth.
 
-## Fresh-clone setup
-- After cloning this repo, run `git config user.email "123817889+vortom@users.noreply.github.com"` (and optionally `git config user.name "Someone_Cz"`) inside the clone. Without this local override, the machine's global git identity takes over and commits will be authored under the maintainer's personal email — which would re-leak it to the public repo on the first push.
-
 ## Build & dev commands
 - `./gradlew build` — full build incl. tests + Spotless. First run: 10+ min (Loom downloads MC + JDK 25 via toolchain). After: seconds.
 - `./gradlew :fabric:runClient` — launch dev Minecraft client with the mod.
