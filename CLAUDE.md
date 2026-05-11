@@ -41,9 +41,16 @@ Creative tab auto-populates from `ModItems.getAll()` — don't touch `CzechCraft
 ## Releasing
 1. Bump `mod_version` in `gradle.properties`.
 2. Add a section to `CHANGELOG.md` matching the new tag (the release workflow extracts that section as the GitHub-Release body).
-3. Tag `v<x.y.z>` and push the tag — `release.yml` builds, verifies datagen drift, publishes to Modrinth, creates a GitHub Release.
+3. Tag `v<x.y.z>` and push the tag — `release.yml` builds, verifies datagen drift, publishes to Modrinth, syncs the listing body, sets per-version environment metadata, and creates a GitHub Release.
 
-Prereq: `MODRINTH_TOKEN` repo secret set (Modrinth PAT with "Create version" scope).
+### Prereqs
+- `MODRINTH_TOKEN` repo secret set (Modrinth PAT with **two** scopes: `Versions → Create versions` AND `Projects → Write projects`). Missing the second scope makes body-sync and env-metadata steps fail.
+- The GitHub repo must be **public** — Modrinth's Content Rules §5.4 requires the Source link to point at a publicly-reachable resource.
+
+### Modrinth listing conventions
+- `README.md` is **developer-facing** (build, architecture, extension guide). `MODRINTH.md` is **player-facing** (features, install, recipe) — `fabric/build.gradle`'s `syncBodyFrom` points at `MODRINTH.md`.
+- `modrinth` (jar upload) and `modrinthSyncBody` (body push) are **two separate minotaur tasks**. `release.yml` runs both explicitly, then verifies the body landed.
+- **Per-version environment metadata** (Modrinth's March 2026 overhaul) lives in v3 API only — minotaur 2.9.0 has no DSL for it. `release.yml` PATCHes `environment=client_and_server` after upload and read-back-asserts. Value is hardcoded; if a future module becomes one-sided, update the workflow step + verify assertion together.
 
 ## Conventions
 - Java package root: `cz.czechcraft`. Mod ID: `czechcraft`. Modrinth slug: `czechcraft`. GitHub: `vortom/czech-craft`.
