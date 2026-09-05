@@ -72,7 +72,7 @@ If you want the canonical vanilla pixel-art guide: [Minecraft Wiki — Texture#I
 
 - File names exactly as listed above (lowercase, exact spelling).
 - Deliver as two `.png` files (or a single zip containing them). No source files (PSD/AI/Aseprite) needed for v1, but they're welcome if you'd like to include them — we can keep them out of the public repo and store separately.
-- Hand them back to me (Tomáš), and I'll do the drop-in replacement and a release commit. No code changes will be needed on your side.
+- Hand them back to the maintainer, and we'll do the drop-in replacement and a release commit. No code changes will be needed on your side.
 
 ---
 
