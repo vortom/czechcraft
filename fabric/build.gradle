@@ -7,6 +7,16 @@ base {
     archivesName = project.mod_id
 }
 
+// `implementation project(":common")` is a compile/runtime dependency — it does NOT bundle
+// common's classes into this jar. Without this block the shipped mod is missing every
+// cz.czechcraft.* class outside the fabric package and dies on the first line of
+// CzechCraftFabric.onInitialize() with NoClassDefFoundError. That is what shipped as v1.0.0.
+// Resources are handled separately in processResources, so only classesDirs belong here.
+// Guarded by JarPackagingTest.
+jar {
+    from project(":common").sourceSets.main.output.classesDirs
+}
+
 loom {
     runs {
         datagen {
@@ -39,6 +49,15 @@ dependencies {
     testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
     testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+    // JarPackagingTest inspects the built artifact, not the dev classpath — the dev classpath
+    // always has common on it, which is exactly why it never caught the v1.0.0 packaging bug.
+    dependsOn tasks.jar
+    systemProperty "czechcraft.modJar", tasks.jar.archiveFile.get().asFile.absolutePath
+    systemProperty "czechcraft.commonClassesDirs",
+            project(":common").sourceSets.main.output.classesDirs.asPath
 }
 
 processResources {
