@@ -37,6 +37,25 @@ jobs:
       - name: Build (compiles + runs tests with generated output in place)
         run: ./gradlew build
 
+      - name: Guard against duplicate Modrinth version
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        # minotaur uploads unconditionally — it does not check whether this version number
+        # already exists, so releasing the same tag twice silently creates a second identical
+        # entry. That is exactly how v1.0.0 ended up listed twice. Fail fast instead.
+        # NOTE: this also blocks re-running a release whose upload succeeded but whose later
+        # steps failed — that is deliberate, since the correct recovery is manual.
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          existing=$(curl -sf -H "Authorization: $MODRINTH_TOKEN" \
+            "https://api.modrinth.com/v2/project/czechcraft/version" \
+            | jq -r --arg n "$TAG" '[.[] | select(.version_number == $n)] | length')
+          if [ "$existing" != "0" ]; then
+            echo "::error::Modrinth already lists $existing version(s) numbered $TAG. Refusing to publish a duplicate — bump mod_version, or archive/remove the existing entry first."
+            exit 1
+          fi
+          echo "No existing Modrinth version numbered $TAG — safe to publish."
+
       - name: Publish to Modrinth
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
