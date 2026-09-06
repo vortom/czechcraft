@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `release.yml` creates the GitHub Release *before* touching Modrinth version metadata, and the metadata step now only verifies rather than writing. That write was redundant — minotaur already uploads with `environment=client_and_server` — but it failed on both the 1.0.1 and 1.1.0 releases after the jar was already public, skipping GitHub Release creation and needing manual repair each time.
+
 ## [1.1.0] - 2026-09-06
 
 ### Added
