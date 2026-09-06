@@ -44,16 +44,27 @@ Creative tab auto-populates from `ModItems.getAll()` — don't touch `CzechCraft
 ## Releasing
 1. Bump `mod_version` in `gradle.properties`.
 2. Add a section to `CHANGELOG.md` matching the new tag (the release workflow extracts that section as the GitHub-Release body).
-3. Tag `v<x.y.z>` and push the tag — `release.yml` builds, verifies datagen drift, publishes to Modrinth, syncs the listing body, sets per-version environment metadata, and creates a GitHub Release.
+3. Tag `v<x.y.z>` and push the tag — `release.yml` builds, verifies datagen drift, refuses to publish a version number that already exists, publishes to Modrinth, syncs the listing body, creates the GitHub Release, and *finally* asserts the per-version environment metadata.
+4. **Before tagging, if the supported Minecraft range changed:** re-run the version smoke test (see the datagen gotcha). `SupportedVersionsTest` catches an inconsistent *declaration*, but only a real server run proves the game actually accepts the jar.
 
 ### Prereqs
-- `MODRINTH_TOKEN` repo secret set (Modrinth PAT with **two** scopes: `Versions → Create versions` AND `Projects → Write projects`). Missing the second scope makes body-sync and env-metadata steps fail.
+- `MODRINTH_TOKEN` repo secret set (Modrinth PAT with **two** scopes: `Versions → Create versions` AND `Projects → Write projects`). Missing the second scope makes the body-sync step fail. The env-metadata step now only reads.
 - The GitHub repo must be **public** — Modrinth's Content Rules §5.4 requires the Source link to point at a publicly-reachable resource.
 
 ### Modrinth listing conventions
 - `README.md` is **developer-facing** (build, architecture, extension guide). `MODRINTH.md` is **player-facing** (features, install, recipe) — `fabric/build.gradle`'s `syncBodyFrom` points at `MODRINTH.md`.
 - `modrinth` (jar upload) and `modrinthSyncBody` (body push) are **two separate minotaur tasks**. `release.yml` runs both explicitly, then verifies the body landed.
-- **Per-version environment metadata** (Modrinth's March 2026 overhaul) lives in v3 API only — minotaur 2.9.0 has no DSL for it. `release.yml` PATCHes `environment=client_and_server` after upload and read-back-asserts. Value is hardcoded; if a future module becomes one-sided, update the workflow step + verify assertion together.
+- **Per-version environment metadata** is set by minotaur on upload — `release.yml` only *asserts* it reads back as `client_and_server`. It used to PATCH the value via the v3 API; that was redundant and broke two consecutive releases (v1.0.1 on a read-your-writes race, v1.1.0 on an HTTP error), each time *after* the jar was public. The v1.1.0 failure proved the write was pointless: the PATCH errored and the field was still correct. If a future module becomes one-sided, change the expected value in the assertion — do not reintroduce a write.
+- **Step order matters.** Anything that merely inspects already-published state runs *after* `Create GitHub Release`. Both partial-release incidents happened because a verification step sat in front of it and skipped it on failure.
+
+### Recovering a half-finished release
+Publishing spans two services and is not atomic. If the Modrinth upload succeeds but a later step fails:
+1. **Do not re-run the workflow.** It would attempt to re-upload the same version number; the duplicate guard will block it, and re-running is how 1.0.0 ended up listed twice in the first place.
+2. Check what actually landed: `curl -s https://api.modrinth.com/v2/project/czechcraft/version` and `gh release list`.
+3. If the GitHub Release is missing, create it from the *published* jar so the artifacts match byte-for-byte:
+   `curl -sL -o czechcraft-<v>.jar <cdn url from the API>` then
+   `gh release create v<x.y.z> --title "v<x.y.z>" --notes-file <changelog section> czechcraft-<v>.jar`
+4. Fix the failing step's cause before the next release. The run stays red in history — GitHub cannot retroactively pass it, and that is cosmetic.
 
 ## Conventions
 - Java package root: `cz.czechcraft`. Mod ID: `czechcraft`. Modrinth slug: `czechcraft`. GitHub: `vortom/czechcraft`.
