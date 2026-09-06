@@ -58,6 +58,8 @@ test {
     systemProperty "czechcraft.modJar", tasks.jar.archiveFile.get().asFile.absolutePath
     systemProperty "czechcraft.commonClassesDirs",
             project(":common").sourceSets.main.output.classesDirs.asPath
+    systemProperty "czechcraft.supportedRange", project.minecraft_supported_range
+    systemProperty "czechcraft.supportedVersions", project.minecraft_supported_versions
 }
 
 processResources {
@@ -67,6 +69,8 @@ processResources {
     inputs.property "mod_id", project.mod_id
     inputs.property "mod_name", project.mod_name
     inputs.property "java_version", project.java_version
+    inputs.property "minecraft_supported_range", project.minecraft_supported_range
+    inputs.property "fabric_api_min", project.fabric_api_min
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version,
@@ -74,7 +78,9 @@ processResources {
                 "loader_version": project.loader_version,
                 "mod_id": project.mod_id,
                 "mod_name": project.mod_name,
-                "java_version": project.java_version
+                "java_version": project.java_version,
+                "minecraft_supported_range": project.minecraft_supported_range,
+                "fabric_api_min": project.fabric_api_min
     }
 
     // include the common module's resources (textures, etc.)
@@ -88,8 +94,9 @@ modrinth {
     def isSnapshot = project.version.toString().endsWith("-SNAPSHOT")
     versionType = isSnapshot ? "alpha" : "release"
     uploadFile = jar
-    // Publish for the whole 26.1.x line — fabric.mod.json's tilde matcher already accepts these at runtime.
-    gameVersions = ["26.1", "26.1.1", "26.1.2"]
+    // Single source of truth: gradle.properties. SupportedVersionsTest asserts every
+    // version listed here is actually accepted by the range the jar declares.
+    gameVersions = project.minecraft_supported_versions.split(",").collect { it.trim() }
     loaders = ["fabric"]
     dependencies {
         required.project "fabric-api"
