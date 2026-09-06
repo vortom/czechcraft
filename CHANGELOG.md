@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `release.yml` now retries the Modrinth version-ID lookup instead of failing on the first miss. Modrinth is not read-your-writes consistent: during the 1.0.1 release the lookup ran ~300 ms after upload, found nothing, and aborted the workflow *after* the jar was already public — skipping GitHub Release creation.
+- `release.yml` refuses to publish a version number that already exists on Modrinth. Re-running a release previously re-uploaded silently, which is how 1.0.0 came to be listed twice.
+
 ## [1.0.1] - 2026-09-06
 
 ### Fixed

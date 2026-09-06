@@ -93,12 +93,27 @@ jobs:
         # this value and the verify check below.
         run: |
           TAG=${GITHUB_REF#refs/tags/v}
-          VERSION_ID=$(curl -sf \
-            -H "Authorization: $MODRINTH_TOKEN" \
-            "https://api.modrinth.com/v3/project/czechcraft/version" \
-            | jq -r --arg n "$TAG" '.[] | select(.version_number == $n) | .id' | head -1)
+          # Modrinth is NOT read-your-writes consistent. On the v1.0.1 release the upload
+          # completed at 08:46:25.303Z and this lookup ran ~300ms later, found nothing, and
+          # failed the release *after* the jar was already public — skipping the GitHub
+          # Release step. Retry instead of giving up on the first miss. Resolution uses v2
+          # (the same endpoint the body-sync step above already proves the token works on);
+          # the PATCH below still needs v3, where the environment field lives.
+          VERSION_ID=""
+          for attempt in 1 2 3 4 5 6; do
+            VERSION_ID=$(curl -sf \
+              -H "Authorization: $MODRINTH_TOKEN" \
+              "https://api.modrinth.com/v2/project/czechcraft/version" \
+              | jq -r --arg n "$TAG" '.[] | select(.version_number == $n) | .id' | head -1)
+            if [ -n "$VERSION_ID" ]; then
+              echo "Resolved Modrinth version $TAG to $VERSION_ID on attempt $attempt."
+              break
+            fi
+            echo "Version $TAG not visible on the API yet (attempt $attempt/6) — waiting 5s."
+            sleep 5
+          done
           if [ -z "$VERSION_ID" ]; then
-            echo "::error::Could not resolve Modrinth version ID for tag v$TAG — was the upload step skipped?"
+            echo "::error::Could not resolve Modrinth version ID for tag v$TAG after 6 attempts (~25s). Check whether the upload step actually succeeded."
             exit 1
           fi
           echo "Patching environment=client_and_server on Modrinth version $VERSION_ID"
